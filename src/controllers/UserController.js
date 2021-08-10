@@ -9,8 +9,8 @@ module.exports = {
 
   async create(req, res, next) {
     try {
-      const { username } = req.body
-      await knex('users').insert({ username })
+      const { username, email, password } = req.body
+      await knex('users').insert({ username, email, password })
       return res.status(201).send()
     } catch (error) {
       return next(error)
@@ -30,9 +30,9 @@ module.exports = {
 
   async delete(req, res, next) {
     try {
-        const { id } = req.params
-        await knex('users').where( { id }).del()
-        return res.status(200).json('User deleted!')
+      const { id } = req.params
+      await knex('users').where({ id }).del()
+      return res.status(200).json('User deleted!')
     } catch (error) {
       return next(error)
     }
