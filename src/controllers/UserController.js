@@ -1,4 +1,4 @@
-const { update } = require('../database')
+const User = require('../models/User')
 const knex = require('../database')
 
 module.exports = {
@@ -9,8 +9,8 @@ module.exports = {
 
   async create(req, res, next) {
     try {
-      const { username, email, password } = req.body
-      await knex('users').insert({ username, email, password })
+      const { username, email, password, role } = req.body
+      await User.userRegis(username, email, password, role)
       return res.status(201).send()
     } catch (error) {
       return next(error)
