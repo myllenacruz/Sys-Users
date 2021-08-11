@@ -21,10 +21,10 @@ module.exports = {
 
   async update(req, res, next) {
     try {
-      const { username } = req.body
+      const { username, email, role } = req.body
       const { id } = req.params
-      await knex('users').update({ username }).where({ id })
-      return res.send()
+      await knex('users').update({ username, email, role }).where({ id: id })
+      return res.send('Updated successfully!')
     } catch (error) {
       return next(error)
     }
