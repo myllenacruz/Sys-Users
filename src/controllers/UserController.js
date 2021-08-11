@@ -47,13 +47,33 @@ module.exports = {
       const result = await PasswordTokens.create(email)
       if (result.status) {
         res.status(200)
-        res.send("" + result.token)
+        res.send('' + result.token)
       } else {
         res.status(406)
         res.send(result.error)
       }
     } catch (error) {
-      return (error)
+      return error
+    }
+  },
+
+  async changePassword(req, res) {
+    try {
+      const token = req.body.token
+      const password = req.body.password
+      const isTokenValid = await PasswordTokens.validate(token)
+      if (isTokenValid.status) {
+        await User.changePassword(
+          password,
+          isTokenValid.token.user_id,
+          isTokenValid.token
+        )
+        res.status(200).json('Password changed!')
+      } else {
+        res.status(406).json('Invalid token!')
+      }
+    } catch (error) {
+      return error
     }
   },
 

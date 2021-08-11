@@ -4,12 +4,12 @@ const bcrypt = require('bcrypt')
 class User {
   async userRegis(username, email, password) {
     try {
-      let hash = await bcrypt.hash(password, 10)
+      const hash = await bcrypt.hash(password, 10)
       await knex
         .insert({ username, email, password: hash, role: 0 })
         .table('users')
     } catch (error) {
-      return error 
+      return error
     }
   }
 
@@ -39,6 +39,11 @@ class User {
     } catch (error) {
       return undefined
     }
+  }
+
+  async changePassword(newPassword, id, token) {
+    const hash = await bcrypt.hash(newPassword, 10)
+    await knex.update({ password: hash }).where({ id: id }).table('users')
   }
 }
 
