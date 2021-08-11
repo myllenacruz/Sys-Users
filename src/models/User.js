@@ -1,7 +1,5 @@
 const knex = require('../database')
-const express = require('express')
 const bcrypt = require('bcrypt')
-const { resourceLimits } = require('worker_threads')
 
 class User {
   async userRegis(username, email, password) {
@@ -12,6 +10,18 @@ class User {
         .table('users')
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  async findById(id) {
+    try {
+      const result = await knex
+        .select(['id', 'email', 'role', 'password'])
+        .where({ id: id })
+        .table('users')
+      return result
+    } catch (error) {
+      return undefined
     }
   }
 }

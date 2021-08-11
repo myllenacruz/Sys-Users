@@ -3,7 +3,9 @@ const knex = require('../database')
 
 module.exports = {
   async index(req, res) {
-    const results = await knex('users')
+    const results = await knex
+      .select(['id', 'username', 'email', 'role', 'created_at', 'updated_at'])
+      .table('users')
     return res.json(results)
   },
 
@@ -23,6 +25,16 @@ module.exports = {
       const { id } = req.params
       await knex('users').update({ username }).where({ id })
       return res.send()
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  async findUser(req, res) {
+    try {
+      const { id } = req.params
+      const user = await User.findById(id)
+      return res.json(user)
     } catch (error) {
       return next(error)
     }
