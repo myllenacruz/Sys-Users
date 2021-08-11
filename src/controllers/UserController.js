@@ -68,6 +68,7 @@ module.exports = {
           isTokenValid.token.user_id,
           isTokenValid.token
         )
+        await PasswordTokens.setUsed(token) 
         res.status(200).json('Password changed!')
       } else {
         res.status(406).json('Invalid token!')
