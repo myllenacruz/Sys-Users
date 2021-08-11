@@ -1,6 +1,9 @@
 const User = require('../models/User')
 const knex = require('../database')
 const PasswordTokens = require('../models/PasswordTokens')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+require('dotenv').config()
 
 module.exports = {
   async index(req, res) {
@@ -68,10 +71,30 @@ module.exports = {
           isTokenValid.token.user_id,
           isTokenValid.token
         )
-        await PasswordTokens.setUsed(token) 
+        await PasswordTokens.setUsed(token)
         res.status(200).json('Password changed!')
       } else {
         res.status(406).json('Invalid token!')
+      }
+    } catch (error) {
+      return error
+    }
+  },
+
+  async login(req, res) {
+    try {
+      const { email, password } = req.body
+      const user = await User.findByEmail(email)
+      if (user != undefined) {
+        const result = await bcrypt.compare(password, user.password)
+        if (result) {
+          const token = jwt.sign({ email: email }, '' + process.env.KEY_JWT)
+          res.status(200).json({ token: token })
+        } else {
+          res.status(401).json('Invalid password!')
+        }
+      } else {
+        res.json({ status: false })
       }
     } catch (error) {
       return error
