@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const knex = require('../database')
+const PasswordTokens = require('../models/PasswordTokens')
 
 module.exports = {
   async index(req, res) {
@@ -37,6 +38,22 @@ module.exports = {
       return res.json(user)
     } catch (error) {
       return next(error)
+    }
+  },
+
+  async recoverPassword(req, res) {
+    try {
+      const email = req.body.email
+      const result = await PasswordTokens.create(email)
+      if (result.status) {
+        res.status(200)
+        res.send("" + result.token)
+      } else {
+        res.status(406)
+        res.send(result.error)
+      }
+    } catch (error) {
+      return (error)
     }
   },
 
