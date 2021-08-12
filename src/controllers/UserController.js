@@ -83,12 +83,12 @@ module.exports = {
 
   async login(req, res) {
     try {
-      const { email, password } = req.body
+      const { email, password, role } = req.body
       const user = await User.findByEmail(email)
       if (user != undefined) {
         const result = await bcrypt.compare(password, user.password)
         if (result) {
-          const token = jwt.sign({ email: email }, '' + process.env.KEY_JWT)
+          const token = jwt.sign({ role: role }, '' + process.env.KEY_JWT)
           res.status(200).json({ token: token })
         } else {
           res.status(401).json('Invalid password!')
